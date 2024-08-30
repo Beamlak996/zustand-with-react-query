@@ -1,21 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "./api/user";
 import { useUserStore } from "./state/user-store";
-import { useEffect } from "react";
 
 function App() {
-  const {users, setUsers} = useUserStore()
+  const { filters } = useUserStore()
 
   const { data, isPending, isError } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => getUsers(),
+    queryKey: ["users", filters],
+    queryFn: () => getUsers(filters),
   });
 
-  useEffect(() => {
-    if(data) {
-      setUsers(data)
-    }
-  }, [data])
+
 
   if (isPending) {
     return <div>Loading...</div>;
@@ -29,7 +24,7 @@ function App() {
 
   return (
     <div className="">
-      {users.map((user) => (
+      {data.map((user) => (
         <div key={user.id} >
           {user.name}
         </div>
